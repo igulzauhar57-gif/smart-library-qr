@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Library QR</title>
+<style>
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #dbeafe, #f5e8ff, #e0f7fa);
+  background-attachment: fixed;
+  text-align: center;
+  margin: 0;
+  padding: 30px 15px;
+  color: #24324b;
+}  .card {
+  max-width: 1000px;
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  margin: 25px auto;
+  box-shadow: 0 8px 25px #0002;
+}
+
+li {
+  list-style: none;
+  background: #f1f5ff;
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 15px;
+  text-align: left;
+  line-height: 2.5;
+}
+
+button {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 18px;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+    body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #dbeafe, #f5e8ff, #e0f7fa);
+  background-attachment: fixed;
+  text-align: center;
+  margin: 0;
+  padding: 30px 15px;
+  color: #24324b;
+}
+      
+      
+      
+      
+      
+    
+    h1 { color: #1746a2; }
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 550px;
+      margin: 20px auto;
+      box-shadow: 0 4px 15px #0002;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    input {
+      padding: 12px;
+      margin: 7px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    li { text-align: left; margin: 10px; }
+  .school-header {
+  background: linear-gradient(135deg, #173b75, #673ab7);
+  color: white;
+  padding: 40px 20px;
+  border-radius: 25px;
+  max-width: 1000px;
+  margin: 0 auto 30px;
+  box-shadow: 0 10px 30px #0003;
+}
+
+.school-header h1 {
+  color: white;
+  font-size: 38px;
+  margin-bottom: 15px;
+}
+
+.school-header h2 {
+  color: #ffe082;
+  font-size: 25px;
+}
+
+.school-header p {
+  font-size: 17px;
+  line-height: 1.6;
+}
+</style>
+</head>
+<body>
+ <div class="school-header">
+  <h1>📚 SMART LIBRARY QR</h1>
+  <h2>М. Әбенова атындағы ЖББМ</h2>
+  <p>Заманауи электронды кітапхана</p>
+  <p>Кітапты таңдаңыз, QR-кодты сканерлеңіз және онлайн оқыңыз!</p>
+</div> 
+  
+
+  <div class="card" style="display:none;">
+    <h2>📖 Кітапты тіркеу</h2>
+    <input id="book" placeholder="Кітап атауы">
+    <input id="author" placeholder="Автор">
+    <input id="code" placeholder="QR немесе штрих-код нөмірі">
+    <br>
+    <button onclick="addBook()">Кітапты қосу</button>
+  </div>
+
+  <div class="card">
+    <h2>📋 Кітаптар тізімі</h2>
+    <p>Барлық кітап: <b id="count">0</b></p>
+  <input
+  type="text"
+  id="searchBook"
+  placeholder="🔍 Кітап атауын іздеу..."
+  oninput="searchBooks()"
+  style="width:85%; padding:15px; border-radius:12px;"
+>
+  <ul id="list"></ul>
+  </div>
+
+  <script>
+const defaultBooks = [
+  {name:"Абай жолы", author:"Мұхтар Әуезов", code:"1001"},
+  {name:"Көшпенділер", author:"Ілияс Есенберлин", code:"1002"},
+  {name:"Қан мен тер", author:"Әбдіжәміл Нұрпейісов", code:"1003"},
+  {name:"Ақбілек", author:"Жүсіпбек Аймауытов", code:"1004"},
+  {name:"Ақан сері", author:"Сәкен Жүнісов", code:"1005"},
+  {name:"Ұшқан ұя", author:"Бауыржан Момышұлы", code:"1006"},
+  {name:"Қара сөздер", author:"Абай Құнанбайұлы", code:"1007"},
+  {name:"Бақытсыз Жамал", author:"Міржақып Дулатұлы", code:"1008"},
+  {name:"Шыңырау", author:"Әбіш Кекілбаев", code:"1009"},
+  {name:"Мұхтар Әуезов. 47-том", author:"Мұхтар Әуезов", code:"1010"}
+];
+
+let books = defaultBooks.map(b => ({...b}));
+books = books.filter(b => Number(b.code) >= 1001 && Number(b.code) <= 1010);
+const book1010 = books.find(b => String(b.code) === "1010");
+const book1005 = books.find(b => String(b.code) === "1005");
+const book1009 = books.find(b => String(b.code) === "1009");
+
+if (book1009) {
+  book1009.name = "Шыңырау";
+  book1009.author = "Әбіш Кекілбаев";
+}
+if (book1005) {
+  book1005.name = "Ақан сері";
+  book1005.author = "Сәкен Жүнісов";
+}
+if (book1010) {
+  book1010.name = "Мұхтар Әуезов. 47-том";
+  book1010.author = "Мұхтар Әуезов";
+}  
+const pdfLinks = {
+  "1001": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/1b0/1b031bf6e7179f204d89b0ee5b37e0ff.pdf&ln=kz",
+  "1002": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/2ef/2efe4c571b8c09903f852f2e2114ae6e.pdf&ln=kz",
+"1003": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/0d5/0d581f528880c6ae74bf3685d2ef0add.pdf&ln=kz",
+"1004": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/544/544c29080d6a00022567695539346f7b.pdf&ln=kz",
+"1006": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/5e1/5e13518fb629e466f3a930c56af4d672.pdf&ln=kz",
+"1007": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/414/4142ab9314ccb486b10184fb1e96a1e0.pdf&ln=kz",
+"1008": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/7cd/%D0%94%D1%83%D0%BB%D0%B0%D1%82%D0%BE%D0%B2.pdf&ln=kz",
+"1010": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/d67/d67682d9524403b9daf047ffa9b5ee58.pdf&ln=kz",
+"1005": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/318/2020/05/22/4153f643771eac8d30d32ac9cf837083.pdf&ln=kz",
+"1009": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/24b/%D0%A8%D0%AB%D2%A2%D0%AB%D0%A0%D0%90%D0%A3.pdf&ln=kz"
+};
+const koshpendilerVolumes = {
+  "Жанталас": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/d5c/d5ccbca50010a6a57fe9bc49c26dc293.pdf&ln=kz",
+  "Қаһар": "https://adebiportal.kz/web/viewer.php?file=/storage/upload/iblock/fc6/fc6483e4993647140095fbf46154f94a.pdf&ln=kz"
+};
+    function showBooks() {
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      books.forEach(b => {
+        const li = document.createElement("li");
+        
+const cover = document.createElement("img");
+
+cover.src = String(b.code) === "1001"
+  ? "abai.jpeg"
+  : String(b.code) === "1002"
+  ? "koshpendiler.jpeg"
+  : String(b.code) === "1003"
+  ? "kanmenter.jpeg"
+  : String(b.code) === "1004"
+  ? "akbilek.jpeg"
+  : String(b.code) === "1005"
+  ? "akanseri.jpeg"
+  : String(b.code) === "1006"
+  ? "ushkanuya.png"
+  : String(b.code) === "1007"
+  ? "karasozder.png"
+  : String(b.code) === "1008"
+  ? "jamal.png"
+  : String(b.code) === "1009"
+  ? "shynyrau.jpeg"
+  : String(b.code) === "1010"
+  ? "auezov47.jpeg"
+  : "https://placehold.co/120x170/2563eb/ffffff?text=BOOK";
+  
+  
+  
+cover.alt = b.name + " кітабының мұқабасы";
+
+cover.style.width = "120px";
+cover.style.height = "170px";
+cover.style.objectFit = "cover";
+cover.style.borderRadius = "10px";
+cover.style.display = "block";
+cover.style.marginBottom = "15px";
+
+li.appendChild(cover);
+
+const bookTitle = document.createElement("div");
+bookTitle.textContent = b.name + " — " + b.author + " (" + b.code + ")";
+bookTitle.style.fontWeight = "bold";
+bookTitle.style.fontSize = "18px";
+bookTitle.style.marginBottom = "12px";
+
+li.appendChild(bookTitle);
+if (pdfLinks[String(b.code)]) {
+  const link = document.createElement("a");
+  link.href = pdfLinks[String(b.code)];
+  link.textContent = String(b.code) === "1002"
+  ? " 📖 Алмас қылыш PDF оқу"
+  : " 📖 PDF оқу";
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.style.marginLeft = "15px";
+  li.appendChild(link);
+}
+if (pdfLinks[String(b.code)]) {
+  const qrButton = document.createElement("button");
+qrButton.textContent = String(b.code) === "1002"
+  ? "Алмас қылыш QR"
+  : "QR-код";
+  qrButton.style.marginLeft = "10px";
+
+  qrButton.onclick = function() {
+    const url = pdfLinks[String(b.code)];
+    const qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data="
+      + encodeURIComponent(url);
+    window.open(qrUrl, "_blank");
+  };
+
+  li.appendChild(qrButton);
+}
+if (String(b.code) === "1002") {
+  Object.entries(koshpendilerVolumes).forEach(([title, url]) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.textContent = " 📖 " + title + " PDF оқу";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.style.marginLeft = "10px";
+    li.appendChild(link);
+
+    const qrButton = document.createElement("button");
+    qrButton.textContent = title + " QR";
+    qrButton.style.marginLeft = "10px";
+
+    qrButton.onclick = function() {
+      const qrUrl =
+        "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+        encodeURIComponent(url);
+      window.open(qrUrl, "_blank");
+    };
+
+    li.appendChild(qrButton);
+  });
+}
+list.appendChild(li);
+      });
+      document.getElementById("count").textContent = books.length;
+    }
+
+  function searchBooks() {
+  const query = document.getElementById("searchBook").value.toLowerCase().trim();
+  const items = document.querySelectorAll("#list li");
+
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(query) ? "" : "none";
+  });
+}
+  function addBook() {
+      const name = document.getElementById("book").value.trim();
+      const author = document.getElementById("author").value.trim();
+      const code = document.getElementById("code").value.trim();
+
+      if (!name || !author || !code) {
+        alert("Барлық мәліметті толтырыңыз!");
+        return;
+      }
+
+      if (books.some(b => b.code === code)) {
+        alert("Бұл код бұрын тіркелген!");
+        return;
+      }
+
+      books.push({name, author, code});
+      localStorage.setItem("books", JSON.stringify(books));
+      showBooks();
+      alert("Кітап сәтті тіркелді!");
+    }
+
+    showBooks();
+  </script>
+
+
+
+
+</body>
+</html>
